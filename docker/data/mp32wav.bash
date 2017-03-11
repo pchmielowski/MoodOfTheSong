@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function convert_each_file {
   ls "$1" \

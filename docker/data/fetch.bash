@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ARCHIVE=archive.zip
 
