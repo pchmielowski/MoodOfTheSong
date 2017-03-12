@@ -9,7 +9,7 @@ function convert_each_file {
       done
 }
 
-DATASET='dataset/4. dataset (audio)'
+DATASET='../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)'
 ls "$DATASET" \
   | while read DIR; do
       convert_each_file "$DATASET"/"$DIR"
