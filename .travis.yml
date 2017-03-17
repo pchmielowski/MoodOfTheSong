@@ -3,3 +3,4 @@ python:
     - "3.6"
 script:
     - find . -name \*.py -exec pep8 {} +
+    - find . -name \*.py -exec pyflakes {} +
