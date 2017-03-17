@@ -18,7 +18,8 @@ def plot(data):
     plt.interactive(False)
 
 
-PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/Angry_all/'
+PATH = '../dataset/emotion-recognition-236f22a6fde0/' \
+    + '4. dataset (audio)/Angry_all/'
 files = listdir(PATH)
 print(files)
 plot(signal(PATH + files[0]))
