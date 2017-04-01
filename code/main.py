@@ -1,14 +1,26 @@
 import wave
 import matplotlib.pyplot as plt
 import numpy as np
-from os import listdir
+import librosa
+import scipy
+import os
 
 
-def signal(path):
-    file = wave.open(path, 'r')
-    content = np.fromstring(file.readframes(-1), 'Int16')
-    file.close()
-    return content
+class Signals:
+    def __init__(self, directory):
+        self.directory = directory
+
+    def __signal(self, file):
+        file = wave.open(self.directory + file, 'r')
+        content = np.fromstring(file.readframes(-1), 'Int16')
+        file.close()
+        return content
+
+    def values(self):
+        return map(
+            self.__signal,
+            os.listdir(self.directory)
+        )
 
 
 def plot(data):
@@ -18,8 +30,24 @@ def plot(data):
     plt.interactive(False)
 
 
-PATH = '../dataset/emotion-recognition-236f22a6fde0/' \
-    + '4. dataset (audio)/Angry_all/'
-files = listdir(PATH)
-print(files)
-plot(signal(PATH + files[0]))
+def features(path):
+    rates = list(
+        map(
+            lambda data: librosa.feature.zero_crossing_rate(data).mean(),
+            Signals(path).values())
+    )
+    return [
+        scipy.mean(rate),
+        scipy.std(rates)
+    ]
+
+
+PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
+MOODS = ['Angry_all/',
+         'Happy_all/',
+         'Relax_all/',
+         'Sad_all/']
+for rate in map(
+        lambda mood: features(PATH + mood),
+        MOODS):
+    print(rate)
