@@ -85,5 +85,10 @@ def read():
 
 save(means, deviations)
 from_db = read()
-plt.bar([0, 1, 2, 3], from_db["means"], .2, yerr=from_db["deviations"], ecolor='k')
+plt.bar(
+    [0, 1, 2, 3],
+    from_db["means"],
+    .2,
+    yerr=from_db["deviations"],
+    ecolor='k')
 plt.show()
