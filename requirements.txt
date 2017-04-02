@@ -1,2 +1,7 @@
 pep8
 pyflakes
+librosa
+scipy
+wave
+matplotlib
+numpy 
