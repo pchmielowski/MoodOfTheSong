@@ -37,16 +37,15 @@ def plot(data):
 
 
 class Stats:
-    def __init__(self, path, transform):
-        self.path = path
+    def __init__(self, directory, transform):
+        self.directory = directory
         self.transform = transform
 
     def value(self):
-        assert os.path.isdir(self.path)
         rates = list(
             map(
                 lambda data: self.transform(data).mean(),
-                Directory(self.path).signals()
+                self.directory.signals()
             )
         )
         return {
@@ -63,7 +62,9 @@ MOODS = ['Angry_all/',
 means = []
 deviations = []
 stats = map(
-    lambda m: Stats(PATH + m, librosa.feature.zero_crossing_rate).value(),
+    lambda m: Stats(
+        Directory(PATH + m),
+        librosa.feature.zero_crossing_rate).value(),
     MOODS)
 for stat in stats:
     means.append(stat["mean"])
