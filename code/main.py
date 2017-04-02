@@ -45,8 +45,8 @@ class Stats:
     def value(self):
         rates = list(
             map(
-                lambda data: np.random.rand(1, 5).mean(),
-                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                lambda data: self.transform(data).mean(),
+                self.directory.signals()
             )
         )
         return {
