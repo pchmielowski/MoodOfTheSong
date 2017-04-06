@@ -58,36 +58,46 @@ class Stats:
         }
 
 
-def foo(mood):
-    return Stats(
-        Directory(PATH + mood),
-        librosa.feature.zero_crossing_rate).value()
+class Comparision:
+    PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
+
+    @staticmethod
+    def foo(mood):
+        return Stats(
+            Directory(Comparision.PATH + mood),
+            librosa.feature.zero_crossing_rate).value()
+
+    @staticmethod
+    def show_on(graph):
+        moods = [
+            'Angry_all/',
+            'Happy_all/',
+            'Relax_all/',
+            'Sad_all/']
+        stats = multiprocessing.Pool().map(
+            Comparision.foo,
+            moods)
+        means = []
+        deviations = []
+        for stat in stats:
+            means.append(stat["mean"])
+            deviations.append(stat["std"])
+        MongoCache().save(means, deviations)
+        from_db = MongoCache().read()
+        graph.show(from_db["means"], from_db["deviations"])
+
+
+class Graph:
+    @staticmethod
+    def show(means, deviations):
+        plt.bar(
+            [0, 1, 2, 3],
+            means,
+            .2,
+            yerr=deviations,
+            ecolor='k')
+        plt.show()
 
 
 if __name__ == "__main__":
-    PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
-    MOODS = [
-        'Angry_all/',
-        'Happy_all/',
-        'Relax_all/',
-        'Sad_all/']
-
-    stats = multiprocessing.Pool().map(
-        foo,
-        MOODS)
-
-    means = []
-    deviations = []
-    for stat in stats:
-        means.append(stat["mean"])
-        deviations.append(stat["std"])
-
-    MongoCache().save(means, deviations)
-    from_db = MongoCache().read()
-    plt.bar(
-        [0, 1, 2, 3],
-        from_db["means"],
-        .2,
-        yerr=from_db["deviations"],
-        ecolor='k')
-    plt.show()
+    Comparision().show_on(Graph())
