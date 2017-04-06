@@ -4,6 +4,7 @@ import numpy as np
 import librosa
 import scipy
 import os
+from pymongo import MongoClient
 
 
 class Directory:
@@ -70,5 +71,19 @@ for stat in stats:
     means.append(stat["mean"])
     deviations.append(stat["std"])
 
-plt.bar([0, 1, 2, 3], means, .2, yerr=deviations, ecolor='k')
+mongo = MongoClient('mongodb://localhost:27017/').db.stats
+
+
+def save(means, deviations):
+    mongo.insert_one({"means": means,
+                      "deviations": deviations})
+
+
+def read():
+    return mongo.find_one()
+
+
+save(means, deviations)
+from_db = read()
+plt.bar([0, 1, 2, 3], from_db["means"], .2, yerr=from_db["deviations"], ecolor='k')
 plt.show()
