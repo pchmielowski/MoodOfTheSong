@@ -1,10 +1,13 @@
+import os
 import wave
+
+import librosa
 import matplotlib.pyplot as plt
 import numpy as np
-import librosa
 import scipy
-import os
-from pymongo import MongoClient
+
+from MongoCache import MongoCache
+import multiprocessing
 
 
 class Directory:
@@ -55,40 +58,36 @@ class Stats:
         }
 
 
-PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
-MOODS = ['Angry_all/',
-         'Happy_all/',
-         'Relax_all/',
-         'Sad_all/']
-means = []
-deviations = []
-stats = map(
-    lambda m: Stats(
-        Directory(PATH + m),
-        librosa.feature.zero_crossing_rate).value(),
-    MOODS)
-for stat in stats:
-    means.append(stat["mean"])
-    deviations.append(stat["std"])
-
-mongo = MongoClient('mongodb://localhost:27017/').db.stats
+def foo(mood):
+    return Stats(
+        Directory(PATH + mood),
+        librosa.feature.zero_crossing_rate).value()
 
 
-def save(means, deviations):
-    mongo.insert_one({"means": means,
-                      "deviations": deviations})
+if __name__ == "__main__":
+    PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
+    MOODS = [
+        'Angry_all/',
+        'Happy_all/',
+        'Relax_all/',
+        'Sad_all/']
 
+    stats = multiprocessing.Pool().map(
+        foo,
+        MOODS)
 
-def read():
-    return mongo.find_one()
+    means = []
+    deviations = []
+    for stat in stats:
+        means.append(stat["mean"])
+        deviations.append(stat["std"])
 
-
-save(means, deviations)
-from_db = read()
-plt.bar(
-    [0, 1, 2, 3],
-    from_db["means"],
-    .2,
-    yerr=from_db["deviations"],
-    ecolor='k')
-plt.show()
+    MongoCache().save(means, deviations)
+    from_db = MongoCache().read()
+    plt.bar(
+        [0, 1, 2, 3],
+        from_db["means"],
+        .2,
+        yerr=from_db["deviations"],
+        ecolor='k')
+    plt.show()
