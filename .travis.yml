@@ -1,11 +1,15 @@
 language: python
 python:
-  - "3.6"
+- '3.6'
 script:
-  - find . -name \*.py -exec pep8 {} +
-  - find . -name \*.py -exec pyflakes {} +
+- find . -name \*.py -exec pep8 {} +
+- find . -name \*.py -exec pyflakes {} +
 after_success:
-  - "curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge"
-  - "chmod a+x /tmp/travis-automerge"
-  - "BRANCHES_TO_MERGE_REGEX='' BRANCH_TO_MERGE_INTO=master GITHUB_REPO=pchmielowski/MoodOfTheSong /tmp/travis-automerge"
-secure: "pXHQjWSWokCVW+fL6/LIuzhDSukTp+/dhL2JJCuDc+fzbL3UO45pEwSq0G3iuVMIllXT0lO/a7J4XgmwDc8umYrh899HsmLoeLd5/C/C3nTfeNvSe49jhLm9PVpr0ExTzblA0sqqSR+K47eZL4wRvbec3mDV5IB5ik3jsvYiwciXdDA7fu2d1LPOIgNsb2tOO6AonM8e5vX2wbrtqUIG2nzqdTP/pfRPCyGIsEAIKfVm59JAH4WomKaGT3b+3T4ruZxdks11ecV4Vhmq/uBos1xR5y15kFH8X9MCvT8iqCxSSPp2eyf3OD86X2UUMTNgcqR5glQuwzUwnxaeoxNSiOyrPdz9ulmZfYsYYKNbxDm4/ic8PJ2HwR1r6E/EUEe4KjFGaKol0JGtuRUvlZ6aE2o88Ql11pdWZTwGaKdMQwnDt5y7sb3vq121XKtzVQzIHtarlXUu8R3YA9AD7VoM/QA8bEVqDvgHdWriCsxVHTG/4vImRqA67LL4rdu+WVsokN53HE9kSQOifY49N3Bvq16uDjkqG8G0fXkm7VJetPT0Xsys0eAKHyEUO8zw9Dx20W6igKWtv9rxVublsDzKIhvrUb37JLCCl+JKUFlo8bzZIix5p6gbGiKF1TRxVC0cdvfGwkcRpFFDT5MLRtS4yPgkFcgkQjKfks+pP3mE7pg="
+- curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge
+- chmod a+x /tmp/travis-automerge
+- BRANCHES_TO_MERGE_REGEX='' BRANCH_TO_MERGE_INTO=master GITHUB_REPO=pchmielowski/MoodOfTheSong
+  /tmp/travis-automerge
+secure: pXHQjWSWokCVW+fL6/LIuzhDSukTp+/dhL2JJCuDc+fzbL3UO45pEwSq0G3iuVMIllXT0lO/a7J4XgmwDc8umYrh899HsmLoeLd5/C/C3nTfeNvSe49jhLm9PVpr0ExTzblA0sqqSR+K47eZL4wRvbec3mDV5IB5ik3jsvYiwciXdDA7fu2d1LPOIgNsb2tOO6AonM8e5vX2wbrtqUIG2nzqdTP/pfRPCyGIsEAIKfVm59JAH4WomKaGT3b+3T4ruZxdks11ecV4Vhmq/uBos1xR5y15kFH8X9MCvT8iqCxSSPp2eyf3OD86X2UUMTNgcqR5glQuwzUwnxaeoxNSiOyrPdz9ulmZfYsYYKNbxDm4/ic8PJ2HwR1r6E/EUEe4KjFGaKol0JGtuRUvlZ6aE2o88Ql11pdWZTwGaKdMQwnDt5y7sb3vq121XKtzVQzIHtarlXUu8R3YA9AD7VoM/QA8bEVqDvgHdWriCsxVHTG/4vImRqA67LL4rdu+WVsokN53HE9kSQOifY49N3Bvq16uDjkqG8G0fXkm7VJetPT0Xsys0eAKHyEUO8zw9Dx20W6igKWtv9rxVublsDzKIhvrUb37JLCCl+JKUFlo8bzZIix5p6gbGiKF1TRxVC0cdvfGwkcRpFFDT5MLRtS4yPgkFcgkQjKfks+pP3mE7pg=
+env:
+  global:
+    secure: eHrTdEgGoGDMSINwL36eB6IVN27Xd5T3Z3vykqZjhduXLCr/5RASzKjp2XSwCaCdKL/wxGG4HfzgqXAfXivhhlhVWwNAD/grRzPcLv7frq+ff1RD3pBsZ70DqtuFSIxM5xH8Wo2wu8DA/sGDiLagAjXjwZTm6h3cFGW+kiUQr1OZsytJAjkojPKaH3NfUWdcFwh3PULpYjE33G9P8DKd4M519JhmPv0teyzQTifDSt61VuaVPAfHFJdvJ8K4K1C/vwRJixyQuXZRERH8HYpGX5n3pOiUvaSFNSHDWpVDfI8Kl4ec+TKZ4g+5u7OAAcOR1UIVU2K1XQm4Eayf0/oln4pXRm6DzJPzbOJ5yOX8m2/kyPVMFVEMnKf/4d8QoHV4e+ofQd475N8V06pMSYJsYpPgkYr21Hm+c+Sqq5HyWG6tkRqd0l9H1PjmuTmyg6v/2aPppF4SLLjG4UMCJUqa2KRD383h5sgKjvfr/LJdCITwxddHl5x1UifHcEScpCrD4j/Oca9W7M8MrZYJSo9UHKpubwz7OZceEGj3D0TEGmac73p0qcgHghuCLaaR9Hs5QnXDVKXP04u79ZITV3gXewTX6OQ/RkWV0jJS87Y3lCOb35VSpewgyQzItVQ6eBgxSEDHfHtqpv9b4K/mikMylNUHIQV6Vaa9KArKFbCxaxo=
