@@ -74,24 +74,31 @@ class Stats:
         }
 
 
-class Comparision:
+class Summary:
     PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
+    features = {
+        "zero crossing rate": librosa.feature.zero_crossing_rate
+    }
 
-    @staticmethod
-    def foo(mood):
+    def __init__(self, feature):
+        self.feature = feature
+        if not Summary.features.__contains__(feature):
+            raise Exception('There is no feature called: ' + feature)
+
+    # @todo #0 rename
+    def foo(self, mood):
         return Stats(
-            Directory(Comparision.PATH + mood),
-            librosa.feature.zero_crossing_rate).value()
+            Directory(Summary.PATH + mood),
+            Summary.features[self.feature]).value()
 
-    @staticmethod
-    def show_on(graph):
+    def show_on(self, graph):
         moods = [
             'Angry_all/',
             'Happy_all/',
             'Relax_all/',
             'Sad_all/']
         stats = multiprocessing.Pool().map(
-            Comparision.foo,
+            Summary.foo,
             moods)
         means = []
         deviations = []
@@ -99,10 +106,12 @@ class Comparision:
             means.append(stat["mean"])
             deviations.append(stat["std"])
         # @todo #0 split into 3 classes: calculating, saving and reading ones
-        # @todo #0 save also name of calculating method
         # @todo #0 save values in { "happy" : value, "sad" : val ... } format
-        MongoCache("stats").save({"means": means,
-                                  "deviations": deviations})
+        MongoCache("stats").save(
+            {"feature": self.feature,
+             "means": means,
+             "deviations": deviations
+             })
         from_db = MongoCache("stats").read()
         graph.show(from_db["means"], from_db["deviations"])
 
@@ -120,4 +129,4 @@ class Graph:
 
 
 if __name__ == "__main__":
-    Comparision().show_on(Graph())
+    Summary("zero crossing rate").show_on(Graph())
