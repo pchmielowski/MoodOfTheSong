@@ -15,6 +15,8 @@ db = MongoClient().gridfs_signals
 fs = gridfs.GridFS(db)
 
 
+# @todo #0 each class in another file
+
 class Directory:
     def __init__(self, directory):
         self.directory = directory
@@ -36,6 +38,7 @@ class Signal:
         content = np.fromstring(file.readframes(-1), 'Int16')
         file.close()
 
+        # @todo #0 split into 3 classes: readFromFile, savetoDB, readFromDb
         fs_id = fs.put(content.tobytes())
         db.meta.insert_one({"path": self.path, "signal": fs_id})
 
@@ -95,6 +98,9 @@ class Comparision:
         for stat in stats:
             means.append(stat["mean"])
             deviations.append(stat["std"])
+        # @todo #0 split into 3 classes: calculating, saving and reading ones
+        # @todo #0 save also name of calculating method
+        # @todo #0 save values in { "happy" : value, "sad" : val ... } format
         MongoCache("stats").save({"means": means,
                                   "deviations": deviations})
         from_db = MongoCache("stats").read()
