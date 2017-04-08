@@ -8,6 +8,11 @@ import scipy
 
 from MongoCache import MongoCache
 import multiprocessing
+from pymongo import MongoClient
+import gridfs
+
+db = MongoClient().gridfs_signals
+fs = gridfs.GridFS(db)
 
 
 class Directory:
@@ -30,7 +35,15 @@ class Signal:
         file = wave.open(self.path, 'r')
         content = np.fromstring(file.readframes(-1), 'Int16')
         file.close()
-        return content
+
+        fs_id = fs.put(content.tobytes())
+        db.meta.insert_one({"path": self.path, "signal": fs_id})
+
+        return np.frombuffer(
+            fs.get(
+                db.meta.find_one(
+                    {"path": self.path}
+                )["signal"]).read(), dtype='Int16')
 
 
 def plot(data):
@@ -82,8 +95,9 @@ class Comparision:
         for stat in stats:
             means.append(stat["mean"])
             deviations.append(stat["std"])
-        MongoCache().save(means, deviations)
-        from_db = MongoCache().read()
+        MongoCache("stats").save({"means": means,
+                                  "deviations": deviations})
+        from_db = MongoCache("stats").read()
         graph.show(from_db["means"], from_db["deviations"])
 
 
