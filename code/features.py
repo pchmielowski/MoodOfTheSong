@@ -9,5 +9,5 @@ def random(y):
 class Features:
     features = {
         "zero crossing rate": librosa.feature.zero_crossing_rate,
-        "random2": random
+        "random": random
     }
