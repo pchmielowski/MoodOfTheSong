@@ -8,5 +8,5 @@ class MongoCache:
     def save(self, data):
         self.mongo.insert_one(data)
 
-    def read(self):
-        return self.mongo.find_one()
+    def read(self, where):
+        return self.mongo.find_one(where)
