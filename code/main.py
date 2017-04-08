@@ -85,6 +85,7 @@ class Summary:
         if not Summary.features.__contains__(feature):
             raise Exception('There is no feature called: ' + feature)
 
+    # @todo #0 rename
     def foo(self, mood):
         return Stats(
             Directory(Summary.PATH + mood),
