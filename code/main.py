@@ -1,15 +1,13 @@
 import os
 import wave
 
-import librosa
+import gridfs
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
-
-from MongoCache import MongoCache
-import multiprocessing
 from pymongo import MongoClient
-import gridfs
+
+from Summary import Summary
 
 db = MongoClient().gridfs_signals
 fs = gridfs.GridFS(db)
@@ -37,16 +35,16 @@ class Signal:
         file = wave.open(self.path, 'r')
         content = np.fromstring(file.readframes(-1), 'Int16')
         file.close()
-
+        return content
         # @todo #0 split into 3 classes: readFromFile, savetoDB, readFromDb
-        fs_id = fs.put(content.tobytes())
-        db.meta.insert_one({"path": self.path, "signal": fs_id})
-
-        return np.frombuffer(
-            fs.get(
-                db.meta.find_one(
-                    {"path": self.path}
-                )["signal"]).read(), dtype='Int16')
+        # fs_id = fs.put(content.tobytes())
+        # db.meta.insert_one({"path": self.path, "signal": fs_id})
+        #
+        # return np.frombuffer(
+        #     fs.get(
+        #         db.meta.find_one(
+        #             {"path": self.path}
+        #         )["signal"]).read(), dtype='Int16')
 
 
 def plot(data):
@@ -74,46 +72,8 @@ class Stats:
         }
 
 
-class Summary:
-    PATH = '../dataset/emotion-recognition-236f22a6fde0/4. dataset (audio)/'
-    features = {
-        "zero crossing rate": librosa.feature.zero_crossing_rate
-    }
-
-    def __init__(self, feature):
-        self.feature = feature
-        if not Summary.features.__contains__(feature):
-            raise Exception('There is no feature called: ' + feature)
-
-    # @todo #0 rename
-    def foo(self, mood):
-        return Stats(
-            Directory(Summary.PATH + mood),
-            Summary.features[self.feature]).value()
-
-    def show_on(self, graph):
-        moods = [
-            'Angry_all/',
-            'Happy_all/',
-            'Relax_all/',
-            'Sad_all/']
-        stats = multiprocessing.Pool().map(
-            Summary.foo,
-            moods)
-        means = []
-        deviations = []
-        for stat in stats:
-            means.append(stat["mean"])
-            deviations.append(stat["std"])
-        # @todo #0 split into 3 classes: calculating, saving and reading ones
-        # @todo #0 save values in { "happy" : value, "sad" : val ... } format
-        MongoCache("stats").save(
-            {"feature": self.feature,
-             "means": means,
-             "deviations": deviations
-             })
-        from_db = MongoCache("stats").read()
-        graph.show(from_db["means"], from_db["deviations"])
+def random(y):
+    return np.random.random(1)
 
 
 class Graph:
@@ -129,4 +89,4 @@ class Graph:
 
 
 if __name__ == "__main__":
-    Summary("zero crossing rate").show_on(Graph())
+    Summary("random").show_on(Graph())
