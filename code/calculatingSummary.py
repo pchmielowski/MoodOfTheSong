@@ -32,7 +32,6 @@ class CalculatingSummary:
         graph.show(means, deviations)
 
     def __calculate(self):
-        # @todo #0 try putting multiprocessing in another map
         return map(
             CalculatingSummary.Calculate(self.feature),
             map(

@@ -1,4 +1,13 @@
+import multiprocessing
 import scipy
+
+
+class Do:
+    def __init__(self, transform):
+        self.transform = transform
+
+    def __call__(self, data):
+        return self.transform(data).mean()
 
 
 class Stats:
@@ -8,11 +17,14 @@ class Stats:
 
     def value(self):
         rates = list(
-            map(
-                lambda data: self.transform(data).mean(),
+            multiprocessing.Pool().imap_unordered(
+                Do(self.transform),
                 self.directory.signals()
             )
         )
+        assert rates is not None
+        for rate in rates:
+            assert rate is not None
         return {
             "mean": scipy.mean(rates),
             "std": scipy.std(rates)
