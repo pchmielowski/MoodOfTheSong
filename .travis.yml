@@ -5,6 +5,7 @@ sudo: required
 script:
 - find . -name \*.py -exec pep8 {} +
 - find . -name \*.py -exec pyflakes {} +
+- sudo apt-get install rubygems -y
 - sudo gem install pdd
 - pdd --source code > /dev/null
 after_success:
