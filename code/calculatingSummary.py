@@ -22,7 +22,8 @@ class CalculatingSummary:
 
     def show_on(self, graph):
         stats = self.__calculate()
-        # @todo #0 uncomment
+        # @todo #0 uncomment following
+
         # self.__cache(stats)
         means = []
         deviations = []
