@@ -15,7 +15,10 @@ class FileSignal:
         file = wave.open(self.path, 'r')
         content = np.fromstring(file.readframes(-1), 'Int16')
         file.close()
+        # self.__cache(content)
+        return content
+
+    def __cache(self, content):
         self.db.meta.insert_one(
             {"path": self.path,
              "signal": self.fs.put(content.tobytes())})
-        return content

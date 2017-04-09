@@ -24,8 +24,14 @@ class SignalsFactory:
                              gridfs.GridFS(self.db))
 
 
+class Text:
+    def show(self, m, d):
+        print("Means:      {}".format(m))
+        print("Deviations: {}".format(d))
+
+
 if __name__ == "__main__":
-    MongoSummary(feature="random")
+    # MongoSummary(feature="random")
     CalculatingSummary(
-        feature="random",
-        factory=SignalsFactory(False)).show_on(Graph())
+        feature="zero crossing rate",
+        factory=SignalsFactory(use_db=True)).show_on(Text())
