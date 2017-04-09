@@ -3,8 +3,6 @@ import pymongo
 
 from calculatingSummary import CalculatingSummary
 from filesignals import FileSignals, DbSignals
-from graph import Graph
-from mongoSummary import MongoSummary
 
 
 class SignalsFactory:
