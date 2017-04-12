@@ -7,7 +7,7 @@ def random(y):
 
 
 def five(y):
-    return np.array([5])
+    return np.array([5000])
 
 
 class Features:
