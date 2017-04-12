@@ -18,6 +18,12 @@ class FileSignal:
         # self.__cache(content)
         return content
 
+    # @todo #0 create caching decorator:
+
+    # value(self):
+    #   ret = origin.value()
+    #   self.__cache(ret)
+    #   return ret
     def __cache(self, content):
         self.db.meta.insert_one(
             {"path": self.path,

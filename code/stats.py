@@ -17,12 +17,17 @@ class Stats:
 
 
 class Vectors:
-    class Calculate:
-        def __init__(self, transform):
-            self.transform = transform
+    class Vector:
+        def __init__(self, transforms):
+            self.transforms = transforms
 
-        def __call__(self, data):
-            return self.transform(data).mean()
+        def __call__(self, signal):
+            # todo return vector
+            return list(map(
+                lambda transform:
+                transform(signal).mean(),
+                self.transforms
+            ))
 
     def __init__(self, directory, transforms):
         self.directory = directory
@@ -31,8 +36,8 @@ class Vectors:
     def vectors(self):
         # @todo #0 handle more transforms
         vectors = list(
-            multiprocessing.Pool().imap_unordered(
-                Vectors.Calculate(self.transforms[0]),
+            map(
+                Vectors.Vector(self.transforms),
                 self.directory.signals()
             )
         )
