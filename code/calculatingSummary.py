@@ -4,15 +4,6 @@ from stats import Stats
 
 
 class CalculatingSummary:
-    class Calculate(object):
-        def __init__(self, feature):
-            self.feature = feature
-
-        def __call__(self, directory):
-            return Stats(
-                directory,
-                Features.features[self.feature]).value()
-
     def __init__(self, feature, factory):
         if not Features.features.__contains__(feature):
             raise Exception('There is no feature called: ' + feature)
@@ -34,7 +25,10 @@ class CalculatingSummary:
 
     def __calculate(self):
         return map(
-            CalculatingSummary.Calculate(self.feature),
+            lambda directory:
+            Stats(
+                directory,
+                Features.features[self.feature]).value(),
             map(
                 lambda path: self.signals_factory.create(path),
                 ['Angry_all/',
