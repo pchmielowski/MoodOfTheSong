@@ -2,30 +2,41 @@ import multiprocessing
 import scipy
 
 
-class Do:
-    def __init__(self, transform):
-        self.transform = transform
-
-    def __call__(self, data):
-        return self.transform(data).mean()
-
-
+# Statistics per mood
 class Stats:
     def __init__(self, directory, transform):
         self.directory = directory
         self.transform = transform
 
     def value(self):
-        rates = list(
+        vectors = Vectors(self.directory, [self.transform]).vectors()
+        return {
+            "mean": scipy.mean(vectors),
+            "std": scipy.std(vectors)
+        }
+
+
+class Vectors:
+    class Calculate:
+        def __init__(self, transform):
+            self.transform = transform
+
+        def __call__(self, data):
+            return self.transform(data).mean()
+
+    def __init__(self, directory, transforms):
+        self.directory = directory
+        self.transforms = transforms
+
+    def vectors(self):
+        # @todo #0 handle more transforms
+        vectors = list(
             multiprocessing.Pool().imap_unordered(
-                Do(self.transform),
+                Vectors.Calculate(self.transforms[0]),
                 self.directory.signals()
             )
         )
-        assert rates is not None
-        for rate in rates:
+        assert vectors is not None
+        for rate in vectors:
             assert rate is not None
-        return {
-            "mean": scipy.mean(rates),
-            "std": scipy.std(rates)
-        }
+        return vectors
