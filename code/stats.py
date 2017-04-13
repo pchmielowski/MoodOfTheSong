@@ -1,7 +1,5 @@
 import multiprocessing
 import scipy
-import librosa
-
 from features import Features
 
 
@@ -14,8 +12,13 @@ class Stats:
 
     def value(self):
         # @todo #0 let it accept a list of features
-        vectors = Vectors(self.directory, [self.transform, Features.features["five"]]).vectors()
-        # @todo #0 now it calculates mean/std of whole list of lists. let it be feature-wise
+        vectors = Vectors(self.directory,
+                          [self.transform, Features.features["five"]]
+                          ).vectors()
+        '''
+        @todo #0 now it calculates mean/std of whole list of lists.
+         let it be feature-wise
+        '''
         return {
             "mean": scipy.mean(vectors),
             "std": scipy.std(vectors)

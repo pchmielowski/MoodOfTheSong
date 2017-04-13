@@ -3,11 +3,8 @@ python:
 - '3.6'
 sudo: required
 script:
-- find . -name \*.py -exec pep8 {} +
-- find . -name \*.py -exec pyflakes {} +
-- sudo apt-get install ruby -y
 - gem install pdd
-- pdd --source code > /dev/null
+- ./test.bash
 after_success:
 - curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge
 - chmod a+x /tmp/travis-automerge
