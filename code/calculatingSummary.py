@@ -5,16 +5,15 @@ from stats import Stats
 
 
 class CalculatingSummary:
-    def __init__(self, feature, factory):
-        if not Features.features.__contains__(feature):
-            raise Exception('There is no feature called: ' + feature)
-        self.feature = feature
+    def __init__(self, features, factory):
+        assert hasattr(features, '__iter__')
+        self.features = features
         # @todo #0 compound name: directory_factory
         self.signals_factory = factory
 
     # @todo #inject scatter
-    def scatter(self):
-        Scatter(self.__calculate()).show()
+    def scatter(self, name):
+        Scatter(self.__calculate()).show(name)
 
     def show_on(self, graph):
         stats = self.__calculate()
@@ -31,9 +30,7 @@ class CalculatingSummary:
     def __calculate(self):
         return map(
             lambda directory:
-            Stats(
-                directory,
-                Features.features[self.feature]).vectors(),
+            Stats(directory, self.features).vectors(),
             map(
                 lambda path: self.signals_factory.create(path),
                 ['Angry_all/',
@@ -46,5 +43,5 @@ class CalculatingSummary:
     def __cache(self, stats):
         # @todo #0 save values in { "happy" : value, "sad" : val ... } format
         MongoCache("stats").save(
-            {"feature": self.feature,
+            {"feature": self.features,
              "stats": list(stats)})
