@@ -1,22 +1,19 @@
-import librosa
-
-from calculatingSummary import CalculatingSummary
-from features import Features, random, five
-from signals_factory import SignalsFactory
-from scatter import Scatter
-from text import Text
 import itertools
 import time
 
+from calculatingSummary import CalculatingSummary
+from features import Features
+from signals_factory import SignalsFactory
+
 if __name__ == "__main__":
     # MongoSummary(feature="random")
-    for i in itertools.combinations(Features.features, 2):
+    for combination in itertools.combinations(Features.features, 2):
         print(time.time())
-        names = list(map(lambda x: x.__name__, i))
-        png_name = "{}-{}.png".format(names[0], names[1])
+        names = list(map(lambda x: x.__name__, combination))
         CalculatingSummary(
             features=[
-                i[0],
-                i[1]
+                combination[0],
+                combination[1]
             ],
-            factory=SignalsFactory(use_db=False)).scatter(png_name)
+            factory=SignalsFactory(use_db=False)) \
+            .scatter("{}-{}.png".format(names[0], names[1]))

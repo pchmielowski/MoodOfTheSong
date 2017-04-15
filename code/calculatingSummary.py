@@ -1,4 +1,3 @@
-from features import Features
 from mongoCache import MongoCache
 from scatter import Scatter
 from stats import Stats
