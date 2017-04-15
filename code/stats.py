@@ -1,5 +1,7 @@
 import multiprocessing
+
 import scipy
+
 from features import Features
 
 
@@ -12,9 +14,7 @@ class Stats:
 
     def value(self):
         # @todo #0 let it accept a list of features
-        vectors = Vectors(self.directory,
-                          [self.transform, Features.features["five"]]
-                          ).vectors()
+        vectors = self.vectors()
         '''
         @todo #0 now it calculates mean/std of whole list of lists.
          let it be feature-wise
@@ -23,6 +23,11 @@ class Stats:
             "mean": scipy.mean(vectors),
             "std": scipy.std(vectors)
         }
+
+    def vectors(self):
+        return Vectors(self.directory,
+                       [self.transform, Features.features["spectral centroid"]]
+                       ).vectors()
 
 
 class Vectors:

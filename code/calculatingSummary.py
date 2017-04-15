@@ -1,5 +1,6 @@
 from features import Features
 from mongoCache import MongoCache
+from scatter import Scatter
 from stats import Stats
 
 
@@ -10,6 +11,10 @@ class CalculatingSummary:
         self.feature = feature
         # @todo #0 compound name: directory_factory
         self.signals_factory = factory
+
+    # @todo #inject scatter
+    def scatter(self):
+        Scatter(self.__calculate()).show()
 
     def show_on(self, graph):
         stats = self.__calculate()
@@ -28,7 +33,7 @@ class CalculatingSummary:
             lambda directory:
             Stats(
                 directory,
-                Features.features[self.feature]).value(),
+                Features.features[self.feature]).vectors(),
             map(
                 lambda path: self.signals_factory.create(path),
                 ['Angry_all/',
