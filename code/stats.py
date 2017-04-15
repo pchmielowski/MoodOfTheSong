@@ -5,6 +5,7 @@ import scipy
 from features import Features
 
 
+# Statistics per mood
 class Stats:
     '''Statistics per mood'''
 
