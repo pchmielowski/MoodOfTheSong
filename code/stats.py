@@ -9,9 +9,10 @@ from features import Features
 class Stats:
     '''Statistics per mood'''
 
-    def __init__(self, directory, transform):
+    def __init__(self, directory, transforms):
         self.directory = directory
-        self.transform = transform
+        assert hasattr(transforms, '__iter__'), "Features are not iterable"
+        self.transforms = transforms
 
     def value(self):
         # @todo #0 let it accept a list of features
@@ -26,9 +27,7 @@ class Stats:
         }
 
     def vectors(self):
-        return Vectors(self.directory,
-                       [self.transform, Features.features["spectral centroid"]]
-                       ).vectors()
+        return Vectors(self.directory, self.transforms).vectors()
 
 
 class Vectors:
