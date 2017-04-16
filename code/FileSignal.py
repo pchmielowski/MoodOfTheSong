@@ -1,7 +1,6 @@
 import os
-import wave
 
-import numpy as np
+from filesystem import FileSystem
 
 
 class FileSignal:
@@ -12,9 +11,7 @@ class FileSignal:
         self.fs = grid
 
     def value(self):
-        file = wave.open(self.path, 'r')
-        content = np.fromstring(file.readframes(-1), 'Int16')
-        file.close()
+        content = FileSystem.instance().content(self.path)
         # self.__cache(content)
         return content
 
