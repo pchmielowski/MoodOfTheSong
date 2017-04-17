@@ -1,6 +1,6 @@
 from mongoCache import MongoCache
 from scatter import Scatter
-from stats import Stats
+from stats import Vectors
 
 
 class CalculatingSummary:
@@ -29,7 +29,7 @@ class CalculatingSummary:
     def __calculate(self):
         return map(
             lambda directory:
-            Stats(directory, self.features).vectors(),
+            Vectors(directory, self.features).vectors(),
             map(
                 lambda path: self.signals_factory.create(path),
                 ['Angry_all/',
