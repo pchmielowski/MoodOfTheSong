@@ -3,6 +3,7 @@ import os
 import numpy as np
 
 from FileSignal import FileSignal
+from filesystem import FileSystem
 
 
 class FileSignals:
@@ -17,7 +18,7 @@ class FileSignals:
     def signals(self):
         return map(
             lambda file:
-            FileSignal(self.directory + file, self.db, self.fs).value(),
+            FileSignal(self.directory + file, FileSystem.instance()).value(),
             os.listdir(self.directory)
         )
 
