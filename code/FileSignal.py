@@ -1,27 +1,22 @@
 import os
 
-from filesystem import FileSystem
-
 
 class FileSignal:
-    def __init__(self, path, mongo, grid):
+    def __init__(self, path, system):
         assert os.path.isfile(path)
         self.path = path
-        self.db = mongo
-        self.fs = grid
+        self.system = system
 
     def value(self):
-        content = FileSystem.instance().content(self.path)
-        # self.__cache(content)
+        content = self.system.content(self.path)
         return content
 
-    # @todo #0 create caching decorator:
-
-    # value(self):
-    #   ret = origin.value()
-    #   self.__cache(ret)
-    #   return ret
-    def __cache(self, content):
-        self.db.meta.insert_one(
-            {"path": self.path,
-             "signal": self.fs.put(content.tobytes())})
+    '''
+    @todo #0 create caching decorator:
+     value(self):
+     ret = origin.value()
+     self.db.meta.insert_one(
+     {"path": self.path,
+     "signal": self.fs.put(ret.tobytes())})
+     return ret
+    '''
