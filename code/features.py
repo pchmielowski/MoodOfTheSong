@@ -13,8 +13,11 @@ def five(y):
 class Features:
     features = [
         librosa.feature.zero_crossing_rate,
-        librosa.feature.spectral_rolloff,
-        librosa.feature.spectral_bandwidth,
-        librosa.feature.spectral_centroid,
-        librosa.feature.spectral_contrast
+        librosa.feature.spectral_rolloff
+        # librosa.feature.spectral_bandwidth,
+        # librosa.feature.spectral_centroid,
+        # librosa.feature.spectral_contrast,
+        # librosa.feature.chroma_cens,
+        # librosa.feature.chroma_cqt,
+        # librosa.feature.chroma_stft
     ]

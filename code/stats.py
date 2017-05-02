@@ -60,3 +60,13 @@ class Vectors:
         for rate in vectors:
             assert rate is not None
         return vectors
+
+    class Cached:
+        def __init__(self, origin):
+            assert hasattr(origin, 'vectors')
+            print(end="caching... ")
+            self.cached = origin.vectors()
+            print("cached")
+
+        def vectors(self):
+            return self.cached
