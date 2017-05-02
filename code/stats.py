@@ -28,22 +28,18 @@ class Vectors:
     """a collection of vectors per mood"""
 
     class Vector:
-        class Feature:
-            def __init__(self, signal):
-                self.signal = signal
 
-            def __call__(self, transform):
-                return transform(self.signal).mean()
-
-        def __init__(self, transforms):
-            self.transforms = transforms
+        def __init__(self, features):
+            self.features = features
 
         def __call__(self, signal):
-            return list(
-                map(
-                    Vectors.Vector.Feature(signal),
-                    self.transforms
-                ))
+            vector = []
+            for feature in self.features:
+                out = feature(signal)
+                assert out.ndim == 1
+                for o in out:
+                    vector.append(o)
+            return vector
 
     def __init__(self, directory, transforms):
         self.directory = directory
