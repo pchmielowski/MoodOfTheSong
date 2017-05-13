@@ -5,3 +5,5 @@ scipy
 wave
 matplotlib
 numpy 
+memory_profiler
+psutil

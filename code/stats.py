@@ -3,9 +3,8 @@ import multiprocessing
 import scipy
 
 
-# Statistics per mood
 class Stats:
-    '''Statistics per mood'''
+    """Statistics per mood"""
 
     def __init__(self, directory, transforms):
         self.directory = directory
@@ -14,7 +13,7 @@ class Stats:
 
     def value(self):
         # @todo #0 let it accept a list of features
-        vectors = self.vectors()
+        vectors = Vectors(self.directory, self.transforms).vectors()
         '''
         @todo #0 now it calculates mean/std of whole list of lists.
          let it be feature-wise
@@ -24,12 +23,9 @@ class Stats:
             "std": scipy.std(vectors)
         }
 
-    def vectors(self):
-        return Vectors(self.directory, self.transforms).vectors()
-
 
 class Vectors:
-    '''a collection of vectors per mood'''
+    """a collection of vectors per mood"""
 
     class Vector:
         class Feature:
@@ -64,3 +60,13 @@ class Vectors:
         for rate in vectors:
             assert rate is not None
         return vectors
+
+    class Cached:
+        def __init__(self, origin):
+            assert hasattr(origin, 'vectors')
+            print(end="caching... ")
+            self.cached = origin.vectors()
+            print("cached")
+
+        def vectors(self):
+            return self.cached

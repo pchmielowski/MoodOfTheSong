@@ -1,6 +1,11 @@
+import itertools
+
+import sklearn.decomposition
+
 from mongoCache import MongoCache
+from normalization import NormalizedVectors, Norms
 from scatter import Scatter
-from stats import Stats
+from stats import Vectors
 
 
 class CalculatingSummary:
@@ -12,24 +17,25 @@ class CalculatingSummary:
 
     # @todo #inject scatter
     def scatter(self, name):
-        Scatter(self.__calculate()).show(name)
+        moods = self.__moods()
+        norms = Norms.Cached(Norms(moods))
+        print("norms calculated in CalculatingSummary")
+        normalized = list(map(
+            lambda songs: Vectors.Cached(NormalizedVectors(
+                songs,
+                norms
+            )),
+            moods
+        ))
+        print("normalized in CalculatingSummary")
+        Scatter(normalized).show(name)
 
-    def show_on(self, graph):
-        stats = self.__calculate()
-        # @todo #0 uncomment following
-
-        # self.__cache(stats)
-        means = []
-        deviations = []
-        for stat in stats:
-            means.append(stat["mean"])
-            deviations.append(stat["std"])
-        graph.show(means, deviations)
-
-    def __calculate(self):
-        return map(
+    def __moods(self):
+        """:returns list of Vectors"""
+        return list(map(
             lambda directory:
-            Stats(directory, self.features).vectors(),
+            Vectors.Cached(
+                Vectors(directory, self.features)),
             map(
                 lambda path: self.signals_factory.create(path),
                 ['Angry_all/',
@@ -37,10 +43,48 @@ class CalculatingSummary:
                  'Relax_all/',
                  'Sad_all/']
             )
-        )
+        ))
 
     def __cache(self, stats):
         # @todo #0 save values in { "happy" : value, "sad" : val ... } format
         MongoCache("stats").save(
             {"feature": self.features,
              "stats": list(stats)})
+
+    # @todo #0 move to seperate class
+    def __normalize_and_rotate(self, moods):
+        vectors = list(itertools.chain.from_iterable(moods))
+
+        norms = CalculatingSummary.__calculate_norms(vectors)
+        vectors = CalculatingSummary.__normalize_all(
+            vectors,
+            norms)
+
+        pca = self.__train_pca(vectors)
+        print("variance ratio: {}".format(pca.explained_variance_ratio_))
+        moods = list(map(
+            lambda mood: CalculatingSummary.__normalize_all(mood, norms),
+            moods
+        ))
+        return self.__rotate(moods, pca)
+
+    def __rotate(self, moods, pca):
+        print("len(moods): {}".format(len(moods)))
+        vectors = list(map(
+            lambda mood: pca.transform(mood),
+            moods))
+        print(
+            "{} x {} of {} x {} of {} x {}".format(
+                len(vectors),
+                type(vectors[0]),
+                len(vectors[0]),
+                type(vectors[0][0]),
+                len(vectors[0][0]),
+                type(vectors[0][0][0]),
+            ))
+        return vectors
+
+    def __train_pca(self, vectors):
+        pca = sklearn.decomposition.PCA(n_components=3)
+        pca.fit(vectors)
+        return pca
