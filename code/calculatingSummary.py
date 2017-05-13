@@ -1,9 +1,6 @@
-import itertools
-
-import sklearn.decomposition
-
 from mongoCache import MongoCache
 from normalization import NormalizedVectors, Norms
+from pca import PcaModel
 from scatter import Scatter
 from stats import Vectors
 
@@ -28,7 +25,14 @@ class CalculatingSummary:
             moods
         ))
         print("normalized in CalculatingSummary")
-        Scatter(normalized).show(name)
+        print("starting to calculate PCA")
+        model = PcaModel(normalized, 2)
+        print("PCA model trained")
+        rotated = list(map(
+            lambda mood: model.rotate(mood),
+            moods))
+        print("all vectors rotated")
+        Scatter(rotated).show(name)
 
     def __moods(self):
         """:returns list of Vectors"""
@@ -50,41 +54,3 @@ class CalculatingSummary:
         MongoCache("stats").save(
             {"feature": self.features,
              "stats": list(stats)})
-
-    # @todo #0 move to seperate class
-    def __normalize_and_rotate(self, moods):
-        vectors = list(itertools.chain.from_iterable(moods))
-
-        norms = CalculatingSummary.__calculate_norms(vectors)
-        vectors = CalculatingSummary.__normalize_all(
-            vectors,
-            norms)
-
-        pca = self.__train_pca(vectors)
-        print("variance ratio: {}".format(pca.explained_variance_ratio_))
-        moods = list(map(
-            lambda mood: CalculatingSummary.__normalize_all(mood, norms),
-            moods
-        ))
-        return self.__rotate(moods, pca)
-
-    def __rotate(self, moods, pca):
-        print("len(moods): {}".format(len(moods)))
-        vectors = list(map(
-            lambda mood: pca.transform(mood),
-            moods))
-        print(
-            "{} x {} of {} x {} of {} x {}".format(
-                len(vectors),
-                type(vectors[0]),
-                len(vectors[0]),
-                type(vectors[0][0]),
-                len(vectors[0][0]),
-                type(vectors[0][0][0]),
-            ))
-        return vectors
-
-    def __train_pca(self, vectors):
-        pca = sklearn.decomposition.PCA(n_components=3)
-        pca.fit(vectors)
-        return pca
