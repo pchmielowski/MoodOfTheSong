@@ -18,10 +18,19 @@ class Mean:
         return [self.function(signal).mean()]
 
 
+class Simple:
+    def __init__(self, function):
+        self.function = function
+
+    def __call__(self, signal):
+        return self.function(signal)
+
+
 class Features:
     features = [
-        Mean(librosa.feature.zero_crossing_rate),
-        Mean(librosa.feature.spectral_rolloff)
+        Simple(librosa.beat.tempo)
+        # Mean(librosa.feature.zero_crossing_rate),
+        # Mean(librosa.feature.spectral_rolloff)
         # librosa.feature.spectral_bandwidth,
         # librosa.feature.spectral_centroid,
         # librosa.feature.spectral_contrast,
